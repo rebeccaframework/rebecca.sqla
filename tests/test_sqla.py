@@ -158,7 +158,7 @@ class TestCreateSAContext(object):
     def test_no_member(self, target, config):
         result = target(config)
 
-        assert result.__name__ == 'rebecca.sqla.$SAContext'
+        assert result.__name__ == '$SAContext'
 
 
     def test_one(self, target, config):
@@ -170,7 +170,7 @@ class TestCreateSAContext(object):
 
         result = target(config)
 
-        assert result.__name__ == 'rebecca.sqla.$SAContext'
+        assert result.__name__ == '$SAContext'
         assert result.testing == loader
 
 

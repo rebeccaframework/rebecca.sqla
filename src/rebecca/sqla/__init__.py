@@ -34,7 +34,7 @@ def create_sa_context(config):
     reg = config.registry
     loaders = reg.utilities.lookupAll([], IModelLoader)
 
-    return type('rebecca.sqla.$SAContext', (_SAContextBase,),
+    return type('$SAContext', (_SAContextBase,),
                 dict(loaders))
 
 def register_sa_context(config):
