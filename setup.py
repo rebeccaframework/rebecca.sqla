@@ -12,8 +12,6 @@ tests_require = [
     "pytest",
     "pytest-cov",
     "coverage",
-    "mock",
-    "testfixtures",
 ]
 
 long_description = (
