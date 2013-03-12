@@ -3,16 +3,6 @@ from pyramid import testing
 from pyramid.compat import text_
 
 @pytest.fixture
-def config(request):
-    config = testing.setUp()
-    def fin():
-        testing.tearDown()
-
-    request.addfinalizer(fin)
-    return config
-
-
-@pytest.fixture
 def dbsession(request):
     from sqlalchemy import create_engine
     engine = create_engine("sqlite:///")
@@ -27,6 +17,7 @@ def dbsession(request):
     request.addfinalizer(fin)
 
     return DBSession
+
 
 @pytest.fixture
 def models(dbsession):
@@ -50,10 +41,23 @@ def models(dbsession):
     return models
 
 
+class TestSAContextBase(object):
+    @pytest.fixture
+    def target(self):
+        from rebecca.sqla.components import _SAContextBase
+        return _SAContextBase
+
+    def test_it(self, target):
+        request = testing.DummyRequest()
+        result = target(request)
+
+        assert result.request == request
+
+
 class TestModelLoader(object):
     @pytest.fixture
     def target(self):
-        from rebecca.sqla import ModelLoader
+        from rebecca.sqla.components import ModelLoader
         return ModelLoader
 
     @pytest.fixture
@@ -147,71 +151,3 @@ class TestModelLoader(object):
 
         assert result == person
 
-
-class TestCreateSAContext(object):
-    @pytest.fixture
-    def target(self):
-        from rebecca.sqla import create_sa_context
-        return create_sa_context
-
-    def test_no_member(self, target, config):
-        result = target(config)
-
-        assert result.__name__ == '$SAContext'
-
-
-    def test_one(self, target, config):
-        from zope.interface import directlyProvides
-        from rebecca.sqla.interfaces import IModelLoader
-        loader = testing.DummyModel()
-        directlyProvides(loader, IModelLoader)
-        config.registry.registerUtility(loader, name="testing")
-
-        result = target(config)
-
-        assert result.__name__ == '$SAContext'
-        assert result.testing == loader
-
-
-class TestAddModelLoader(object):
-    @pytest.fixture
-    def target(self):
-        from rebecca.sqla import add_model_loader
-        return add_model_loader
-
-    def test_it(self, config, target):
-        from rebecca.sqla.interfaces import IModelLoader
-        target(config, "testing",
-               testing.DummyModel,
-               [('value1', 'value1')],
-               route_name='testing.route')
-        result = config.registry.queryUtility(IModelLoader, name='testing')
-
-        assert result.model_cls == testing.DummyModel
-
-
-class TestRegisterSAContext(object):
-    @pytest.fixture
-    def target(self):
-        from rebecca.sqla import register_sa_context
-        return register_sa_context
-
-    def test_it(self, config, target):
-        from rebecca.sqla.interfaces import ISAContext
-        request = testing.DummyRequest()
-        target(config)
-        result = config.registry.queryAdapter(request, ISAContext)
-        assert result is not None
-        assert ISAContext.providedBy(result)
-
-class TestSAContextBase(object):
-    @pytest.fixture
-    def target(self):
-        from rebecca.sqla import _SAContextBase
-        return _SAContextBase
-
-    def test_it(self, target):
-        request = testing.DummyRequest()
-        result = target(request)
-
-        assert result.request == request
