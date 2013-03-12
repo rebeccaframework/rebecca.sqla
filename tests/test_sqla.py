@@ -198,8 +198,12 @@ class TestRegisterSAContext(object):
         return register_sa_context
 
     def test_it(self, config, target):
+        from rebecca.sqla.interfaces import ISAContext
+        request = testing.DummyRequest()
         target(config)
-
+        result = config.registry.queryAdapter(request, ISAContext)
+        assert result is not None
+        assert ISAContext.providedBy(result)
 
 class TestSAContextBase(object):
     @pytest.fixture

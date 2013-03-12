@@ -1,3 +1,5 @@
+from pyramid.events import subscriber, ContextFound
+from pyramid.interfaces import IRequest
 from zope.interface import implementer, directlyProvides
 from .interfaces import IModelLoader, ISAContext
 
@@ -39,8 +41,8 @@ def register_sa_context(config):
     reg = config.registry
     def register():
         SAContext = create_sa_context(config)
-        directlyProvides(SAContext, ISAContext)
-        reg.registerUtility(SAContext)
+        implementer(SAContext, ISAContext)
+        reg.adapters.register([IRequest], ISAContext, '', SAContext)
 
     config.action('rebecca.sqla.register_sa_context',
                   register)
@@ -57,3 +59,17 @@ def add_model_loader(config, name, model_cls, param_map, route_name=None):
 
     config.action('rebecca.sqla.add_model_loader.{0}'.format(name),
                   register)
+
+
+@subscriber(ContextFound)
+def add_sa_context_attr(event):
+    request = event.request
+    reg = request.registry
+    context = request.context
+    factory = reg.adapters.lookup([IRequest], ISAContext, "")
+    context.sa = factory(request)
+
+def includeme(config):
+    config.add_directive("add_model_loader", add_model_loader)
+    register_sa_context(config)
+    config.scan(".")
