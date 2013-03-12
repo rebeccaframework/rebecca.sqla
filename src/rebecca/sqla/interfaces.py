@@ -8,3 +8,6 @@ class IModelLoader(Interface):
 class ISAContext(Interface):
     request = Attribute(u"request for this context")
     dbsession = Attribute(u"DBSession of SQLAlchemy")
+
+class IDBSession(Interface):
+    pass
