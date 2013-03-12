@@ -1,4 +1,5 @@
 from zope.interface import Interface, Attribute
+from pyramid.compat import text_
 
 class IModelLoader(Interface):
     def __get__(obj, type):
@@ -6,8 +7,8 @@ class IModelLoader(Interface):
         """
 
 class ISAContext(Interface):
-    request = Attribute(u"request for this context")
-    dbsession = Attribute(u"DBSession of SQLAlchemy")
+    request = Attribute(text_("request for this context"))
+    dbsession = Attribute(text_("DBSession of SQLAlchemy"))
 
 class IDBSession(Interface):
     pass

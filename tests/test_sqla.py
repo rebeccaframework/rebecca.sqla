@@ -1,7 +1,7 @@
 import pytest
 from pyramid import testing
 from testfixtures import compare
-import mock
+from pyramid.compat import text_
 
 @pytest.fixture
 def config(request):
@@ -61,7 +61,7 @@ class TestModelLoader(object):
     def person10(self, dbsession, models):
         person10 = []
         for i in range(10):
-            p = models.Person(name=u'testing {0}'.format(i))
+            p = models.Person(name=text_('testing {0}').format(i))
             dbsession.add(p)
             person10.append(p)
         dbsession.flush()
