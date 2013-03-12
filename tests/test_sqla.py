@@ -1,6 +1,5 @@
 import pytest
 from pyramid import testing
-from testfixtures import compare
 from pyramid.compat import text_
 
 @pytest.fixture
@@ -85,7 +84,7 @@ class TestModelLoader(object):
 
         result = loader.__get__(context)
 
-        compare(result, person)
+        assert result == person
 
     def test_none(self, target, dbsession, models):
         loader = target(models.Person, [('person_id', 'id')])
