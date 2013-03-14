@@ -20,7 +20,8 @@ class Person(Base):
     name = Column(Unicode(255))
 
 def hello(context, request):
-    request.response.text = u"{0}".format(context.sa)
+    request.response.text = u"<html><head></head><body>{0}</body></html>".format(context.sa)
+
     return request.response
 
 def person_view(context, request):
@@ -31,12 +32,13 @@ def person_view(context, request):
     return request.response
 
 settings = {
-    "pyramid_includes": ['pyramid_tm'],
     "sqlalchemy.url": "sqlite:///",
     "rebecca.sqla.session": DBSession,
 }
 
 config = Configurator(settings=settings)
+config.include('pyramid_tm')
+config.include('pyramid_debugtoolbar')
 config.include('rebecca.sqla')
 Base.metadata.create_all(bind=DBSession.bind)
 for i in range(10):

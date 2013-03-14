@@ -14,8 +14,8 @@ def add_sa_context_attr(event):
     context = request.context
 
     factory = reg.adapters.lookup([IRequest, IDBSession], ISAContext, "")
-    context.sa = factory(request)
-    context.sa.dbsession = dbsession
+    context.sa = factory(request, dbsession)
+
 
 
 def setup_db(config):

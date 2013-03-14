@@ -30,3 +30,7 @@ class _SAContextBase(object):
     def __init__(self, request, dbsession):
         self.request = request
         self.dbsession = dbsession
+
+
+    def __str__(self):
+        return "SAContext"
