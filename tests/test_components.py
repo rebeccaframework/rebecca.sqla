@@ -54,11 +54,11 @@ class TestSAContextBase(object):
         assert result.request == request
 
 
-class TestModelLoader(object):
+class TestMatchDictModelLoader(object):
     @pytest.fixture
     def target(self):
-        from rebecca.sqla.components import ModelLoader
-        return ModelLoader
+        from rebecca.sqla.components import MatchDictModelLoader
+        return MatchDictModelLoader
 
     @pytest.fixture
     def person10(self, dbsession, models):

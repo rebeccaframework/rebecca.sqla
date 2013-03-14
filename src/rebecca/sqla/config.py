@@ -1,7 +1,7 @@
 from pyramid.interfaces import IRequest, PHASE1_CONFIG, PHASE2_CONFIG
 from zope.interface import implementer, directlyProvides
 
-from .components import _SAContextBase, ModelLoader
+from .components import _SAContextBase, MatchDictModelLoader
 from .interfaces import IModelLoader, ISAContext
 
 def create_sa_context(config):
@@ -29,7 +29,7 @@ def add_model_loader(config, name, model_cls, param_map, route_name=None):
     model_cls = config.maybe_dotted(model_cls)
     reg = config.registry
     def register():
-        loader = ModelLoader(model_cls=model_cls,
+        loader = MatchDictModelLoader(model_cls=model_cls,
                              param_map=param_map,
                              route_name=route_name)
         directlyProvides(loader, IModelLoader)

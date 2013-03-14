@@ -3,7 +3,7 @@ from .interfaces import IModelLoader, ISAContext
 
 
 @implementer(IModelLoader)
-class ModelLoader(object):
+class MatchDictModelLoader(object):
     def __init__(self, model_cls, param_map, route_name=None):
         self.model_cls = model_cls
         self.param_map = param_map
