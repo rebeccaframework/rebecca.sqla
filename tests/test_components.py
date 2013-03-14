@@ -49,9 +49,11 @@ class TestSAContextBase(object):
 
     def test_it(self, target):
         request = testing.DummyRequest()
-        result = target(request)
+        dbsession = testing.DummyResource()
+        result = target(request, dbsession)
 
         assert result.request == request
+        assert result.dbsession == dbsession
 
 
 class TestMatchDictModelLoader(object):

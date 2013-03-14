@@ -2,7 +2,7 @@ from pyramid.interfaces import IRequest, PHASE1_CONFIG, PHASE2_CONFIG
 from zope.interface import implementer, directlyProvides
 
 from .components import _SAContextBase, MatchDictModelLoader
-from .interfaces import IModelLoader, ISAContext
+from .interfaces import IModelLoader, ISAContext, IDBSession
 
 def create_sa_context(config):
     reg = config.registry
@@ -17,7 +17,7 @@ def register_sa_context(config):
     def register():
         SAContext = create_sa_context(config)
         implementer(SAContext, ISAContext)
-        reg.adapters.register([IRequest], ISAContext, '', SAContext)
+        reg.adapters.register([IRequest, IDBSession], ISAContext, '', SAContext)
 
     config.action('rebecca.sqla.register_sa_context',
                   register,

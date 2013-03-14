@@ -1,6 +1,7 @@
 from pyramid.events import subscriber, ContextFound
 from pyramid.interfaces import IRequest
 from sqlalchemy import engine_from_config
+from zope.interface import directlyProvides
 from .interfaces import IDBSession, ISAContext
 
 
@@ -12,7 +13,7 @@ def add_sa_context_attr(event):
     dbsession = reg.queryUtility(IDBSession)
     context = request.context
 
-    factory = reg.adapters.lookup([IRequest], ISAContext, "")
+    factory = reg.adapters.lookup([IRequest, IDBSession], ISAContext, "")
     context.sa = factory(request)
     context.sa.dbsession = dbsession
 
@@ -23,6 +24,7 @@ def setup_db(config):
     dbsession = config.maybe_dotted(dbsession)
     dbsession.remove()
     dbsession.configure(bind=engine)
+    directlyProvides(dbsession, IDBSession)
     config.registry.registerUtility(dbsession, IDBSession)
 
 

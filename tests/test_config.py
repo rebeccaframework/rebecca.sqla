@@ -64,10 +64,14 @@ class TestRegisterSAContext(object):
         return register_sa_context
 
     def test_it(self, config, target):
-        from rebecca.sqla.interfaces import ISAContext
+        from zope.interface import directlyProvides
+        from rebecca.sqla.interfaces import ISAContext, IDBSession
+        
         request = testing.DummyRequest()
+        dbsession = testing.DummyResource()
+        directlyProvides(dbsession, IDBSession)
         target(config)
-        result = config.registry.queryAdapter(request, ISAContext)
+        result = config.registry.queryMultiAdapter([request, dbsession], ISAContext)
         assert result is not None
         assert ISAContext.providedBy(result)
 

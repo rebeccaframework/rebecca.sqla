@@ -27,5 +27,6 @@ class MatchDictModelLoader(object):
 
 @implementer(ISAContext)
 class _SAContextBase(object):
-    def __init__(self, request):
+    def __init__(self, request, dbsession):
         self.request = request
+        self.dbsession = dbsession
